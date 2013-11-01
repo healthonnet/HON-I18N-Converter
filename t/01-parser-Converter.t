@@ -6,7 +6,7 @@ use Encode;
 use HON::I18N::Converter;
 use Data::Dumper;
 use Test::Exception;
-use Test::More tests => 9;
+use Test::More tests => 8;
 
 my $parser = HON::I18N::Converter->new(excel => 't/resources/TestConversionFichierExcel.xls');
 my $parser2 = HON::I18N::Converter->new(excel => 't/resources/test-file.xls');
