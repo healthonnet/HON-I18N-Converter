@@ -6,7 +6,7 @@ use Encode;
 use HON::I18N::Converter;
 use Data::Dumper;
 use Test::Exception;
-use Test::More tests => 8;
+use Test::More tests => 9;
 
 my $parser = HON::I18N::Converter->new(excel => 't/resources/TestConversionFichierExcel.xls');
 my $parser2 = HON::I18N::Converter->new(excel => 't/resources/test-file.xls');
@@ -70,4 +70,4 @@ my $output < io('t/resources/verificationENES.ini');
 #is($content4, $output, 'not same content');
 
 #Test pour vérifier les noms de fichiers
-#lives_ok { $parser3 = init($parser3,'t/resources/TestConversionENES.xls') } 'file read';
+dies_ok { HON::I18N::Converter->new($parser3,'t/resources/foobar.xls') } 'file read';

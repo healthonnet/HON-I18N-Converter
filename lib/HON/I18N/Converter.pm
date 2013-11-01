@@ -79,23 +79,23 @@ if you don't export anything, such as for a purely object-oriented module.
 	#Retourne le tableau contenant la liste des langues
 	sub p_getLanguage {
 
-#La fonction shift prend un tableau en argument; elle supprime son premier élément
-#(les autres sont alors décalés) et renvoie cet élément.
+#La fonction shift prend un tableau en argument; elle supprime son premier element
+#(les autres sont alors decales) et renvoie cet element.
 		my ($self) = shift;
 
-		#Déclaration tableau vide
+		#Declaration tableau vide
 		my @line = ();
 
 		for my $worksheet ( $self->workbook->worksheets() ) {
 			my ( $col_min, $col_max ) = $worksheet->col_range();
 
-#Récupération des cellules de la première ligne (ligne correspondant à la langue)
+#Recuperation des cellules de la premiere ligne (ligne correspondant a la langue)
 			for my $col ( $col_min .. $col_max ) {
 
 				#Valeur de la cellule
 				my $cell = $worksheet->get_cell( 0, $col );
 
-				#Va à la prochaine cellule sauf si la cellule est vide
+				#Va a la prochaine cellule sauf si la cellule est vide
 				next unless $cell;
 
 		  #Push permet d'ajouter une liste de valeurs scalaires au tableau @line
@@ -153,7 +153,7 @@ if you don't export anything, such as for a purely object-oriented module.
 	sub p_write_JS_i18n {
 		my ( $self, $languages ) = @_;
 
-		#En tête du fichier jQuery
+		#En tete du fichier jQuery
 		my $content = "(function(\$){\n";
 
 		#Pour encodage
@@ -165,11 +165,11 @@ if you don't export anything, such as for a purely object-oriented module.
 			my $json =
 			  $encoder->encode( { strings => $self->labels->{$lang} } );
 
-			#Intitulé de chaque section
+			#Intitule de chaque section
 			$content .= "\$.i18n.$lang = $json;\n";
 		}
 
-		#Dernière ligne du document jQuery
+		#Derniere ligne du document jQuery
 		return $content . "})(jQuery);";
 	}
 
