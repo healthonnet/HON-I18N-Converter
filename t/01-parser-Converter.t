@@ -69,4 +69,5 @@ $content4 > io('t/resources/Test3.ini');
 my $output < io('t/resources/verificationENES.ini');
 #is($content4, $output, 'not same content');
 
+#Test pour vérifier les noms de fichiers
 #lives_ok { $parser3 = init($parser3,'t/resources/TestConversionENES.xls') } 'file read';
