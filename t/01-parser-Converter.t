@@ -5,12 +5,12 @@ use IO::All;
 use Encode;
 use HON::I18N::Converter;
 use Data::Dumper;
-use Test::More tests => 8;
+use Test::Exception;
+use Test::More tests => 9;
 
 my $parser = HON::I18N::Converter->new(excel => 't/resources/TestConversionFichierExcel.xls');
 my $parser2 = HON::I18N::Converter->new(excel => 't/resources/test-file.xls');
-my $parser3 = HON::I18N::Converter->new(excel => 't/resources/TESTConversionENES.xls');
-
+my $parser3 = HON::I18N::Converter->new(excel => 't/resources/TestConversionENES.xls');
 
 can_ok($parser, 'p_getLanguage');
 can_ok($parser, 'p_buildHash');
@@ -69,5 +69,4 @@ $content4 > io('t/resources/Test3.ini');
 my $output < io('t/resources/verificationENES.ini');
 #is($content4, $output, 'not same content');
 
-
-
+#lives_ok { $parser3 = init($parser3,'t/resources/TestConversionENES.xls') } 'file read';

@@ -187,13 +187,8 @@ if you don't export anything, such as for a purely object-oriented module.
 	#Fonction valable pour le .ini
 	sub p_write_INI_i18n {
 		my ( $self, $languages ) = @_;
-		#En tête du fichier jQuery
 		my $content = "";
-
-		#Parcours d'une table de hachage
 		foreach my $lang ( keys %{ $self->labels } ) {
-
-			#Intitulé de chaque section
 			$content .= "Language: " . "$lang\n\n";
 			foreach my $lab ( keys %{ $self->labels->{$lang} } ) {
 				$content .=
@@ -201,8 +196,6 @@ if you don't export anything, such as for a purely object-oriented module.
 			}
 			$content .= "\n";
 		}
-
-		#Dernière ligne du document jQuery
 		return $content;
 	}
 }
