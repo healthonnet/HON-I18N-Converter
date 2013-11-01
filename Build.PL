@@ -5,7 +5,7 @@ use Module::Build;
 
 my $builder = Module::Build->new(
     module_name         => 'HON::I18N::Converter',
-    license             => 'Artistic_2_0',
+    license             => 'perl',
     dist_author         => q{Samia Chahlal <samia.chahlal@yahoo.com>},
     dist_version_from   => 'lib/HON/I18N/Converter.pm',
     release_status      => 'stable',
