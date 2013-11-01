@@ -1,0 +1,296 @@
+package HON::I18N::Converter;
+
+use 5.006;
+use strict;
+use warnings FATAL => 'all';
+
+use Encode;
+use Spreadsheet::ParseExcel;
+use JSON::XS;
+
+=head1 NAME
+
+HON::I18N::Converter - The great new HON::I18N::Converter!
+
+=head1 VERSION
+
+Version 0.01
+
+=cut
+
+our $VERSION = '0.01';
+
+=head1 SYNOPSIS
+
+Quick summary of what the module does.
+
+Perhaps a little code snippet.
+
+    use HON::I18N::Converter;
+
+    my $foo = HON::I18N::Converter->new();
+    ...
+
+=head1 EXPORT
+
+A list of functions that can be exported.  You can delete this section
+if you don't export anything, such as for a purely object-oriented module.
+
+=head1 SUBROUTINES/METHODS
+
+=head2 function1
+
+=cut
+
+{
+	use Object::InsideOut;
+
+	my @workbook : Field : Acc( 'Name' => 'workbook' );
+
+	#Tableau labels
+	my @labels : Field : Type('Hash') : Acc( 'Name' => 'labels' );
+
+	#Table de hachage init_args
+	my %init_args : InitArgs = (
+		'EXCEL' => {
+			Regex     => qr/^excel$/i,
+			Mandatory => 1,
+			Type      => 'Scalar',
+		},
+	);
+
+	sub init : Init {
+		my ( $self, $args ) = @_;
+
+		$self->labels( {} );
+
+		my $parser = Spreadsheet::ParseExcel->new();
+		$self->workbook( $parser->parse( $args->{EXCEL} ) );
+
+		if ( !defined $self->workbook ) {
+			die $parser->error(), ".\n";
+		}
+	}
+
+=head2 function2
+
+=cut
+
+	#Retourne le tableau contenant la liste des langues
+	sub p_getLanguage {
+
+#La fonction shift prend un tableau en argument; elle supprime son premier élément
+#(les autres sont alors décalés) et renvoie cet élément.
+		my ($self) = shift;
+
+		#Déclaration tableau vide
+		my @line = ();
+
+		for my $worksheet ( $self->workbook->worksheets() ) {
+			my ( $col_min, $col_max ) = $worksheet->col_range();
+
+#Récupération des cellules de la première ligne (ligne correspondant à la langue)
+			for my $col ( $col_min .. $col_max ) {
+
+				#Valeur de la cellule
+				my $cell = $worksheet->get_cell( 0, $col );
+
+				#Va à la prochaine cellule sauf si la cellule est vide
+				next unless $cell;
+
+		  #Push permet d'ajouter une liste de valeurs scalaires au tableau @line
+				push( @line, $cell->value() );
+			}
+		}
+
+		#Retourne le tableau contenant la liste des langues
+		return @line;
+	}
+
+	sub p_buildHash {
+		my ( $self, $languages ) = @_;
+
+		#Parcours ligne par ligne
+		#Colonne par colonne
+		for my $worksheet ( $self->workbook->worksheets() ) {
+
+			my ( $row_min, $row_max ) = $worksheet->row_range();
+			my ( $col_min, $col_max ) = $worksheet->col_range();
+
+			for my $row ( 1 .. $row_max ) {
+
+				my $label;
+
+				for my $col ( $col_min .. $col_max ) {
+					my $cell = $worksheet->get_cell( $row, $col );
+					next unless $cell;
+
+					if ( $col == 0 ) {
+						$label = $cell->value();
+					}
+					else {
+						$self->labels->{ $languages->[$col] }->{$label} =
+						  $cell->value();
+					}
+				}
+			}
+		}
+	}
+
+=head2 $self->build_properties_JS_file()
+
+=cut
+
+	#Construit une hash contenant les langues
+	sub build_properties_JS_file {
+		my ( $self, $args ) = @_;
+		my @languges = $self->p_getLanguage();
+		$self->p_buildHash( \@languges );
+		return $self->p_write_JS_i18n();
+	}
+
+	#Fonction valable pour le javascript
+	sub p_write_JS_i18n {
+		my ( $self, $languages ) = @_;
+
+		#En tête du fichier jQuery
+		my $content = "(function(\$){\n";
+
+		#Pour encodage
+		my $encoder = JSON::XS->new->ascii->pretty->allow_nonref;
+
+		#Parcours d'une table de hachage
+		foreach my $lang ( keys %{ $self->labels } ) {
+
+			my $json =
+			  $encoder->encode( { strings => $self->labels->{$lang} } );
+
+			#Intitulé de chaque section
+			$content .= "\$.i18n.$lang = $json;\n";
+		}
+
+		#Dernière ligne du document jQuery
+		return $content . "})(jQuery);";
+	}
+
+=head2 $self->build_properties_INI_file()
+
+=cut
+
+	sub build_properties_INI_file {
+		my ( $self, $args ) = @_;
+		my @languges = $self->p_getLanguage();
+		$self->p_buildHash( \@languges );
+		return $self->p_write_INI_i18n();
+	}
+
+	#Fonction valable pour le .ini
+	sub p_write_INI_i18n {
+		my ( $self, $languages ) = @_;
+		#En tête du fichier jQuery
+		my $content = "";
+
+		#Parcours d'une table de hachage
+		foreach my $lang ( keys %{ $self->labels } ) {
+
+			#Intitulé de chaque section
+			$content .= "Language: " . "$lang\n\n";
+			foreach my $lab ( keys %{ $self->labels->{$lang} } ) {
+				$content .=
+				  ( $lab . "=" . $self->labels->{$lang}->{$lab} . "\n" );
+			}
+			$content .= "\n";
+		}
+
+		#Dernière ligne du document jQuery
+		return $content;
+	}
+}
+
+=head1 AUTHOR
+
+Samia Chahlal, C<< <samia.chahlal at yahoo.com> >>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to C<bug-hon-i18n-converter at rt.cpan.org>, or through
+the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=HON-I18N-Converter>.  I will be notified, and then you'll
+automatically be notified of progress on your bug as I make changes.
+
+=head1 SUPPORT
+
+You can find documentation for this module with the perldoc command.
+
+    perldoc HON::I18N::Converter
+
+
+You can also look for information at:
+
+=over 4
+
+=item * RT: CPAN's request tracker (report bugs here)
+
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=HON-I18N-Converter>
+
+=item * AnnoCPAN: Annotated CPAN documentation
+
+L<http://annocpan.org/dist/HON-I18N-Converter>
+
+=item * CPAN Ratings
+
+L<http://cpanratings.perl.org/d/HON-I18N-Converter>
+
+=item * Search CPAN
+
+L<http://search.cpan.org/dist/HON-I18N-Converter/>
+
+=back
+
+
+=head1 ACKNOWLEDGEMENTS
+
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2013 Samia Chahlal.
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the the Artistic License (2.0). You may obtain a
+copy of the full license at:
+
+L<http://www.perlfoundation.org/artistic_license_2_0>
+
+Any use, modification, and distribution of the Standard or Modified
+Versions is governed by this Artistic License. By using, modifying or
+distributing the Package, you accept this license. Do not use, modify,
+or distribute the Package, if you do not accept this license.
+
+If your Modified Version has been derived from a Modified Version made
+by someone other than you, you are nevertheless required to ensure that
+your Modified Version complies with the requirements of this license.
+
+This license does not grant you the right to use any trademark, service
+mark, tradename, or logo of the Copyright Holder.
+
+This license includes the non-exclusive, worldwide, free-of-charge
+patent license to make, have made, use, offer to sell, sell, import and
+otherwise transfer the Package with respect to any patent claims
+licensable by the Copyright Holder that are necessarily infringed by the
+Package. If you institute patent litigation (including a cross-claim or
+counterclaim) against any party alleging that the Package constitutes
+direct or contributory patent infringement, then this Artistic License
+to you shall terminate on the date that such litigation is filed.
+
+Disclaimer of Warranty: THE PACKAGE IS PROVIDED BY THE COPYRIGHT HOLDER
+AND CONTRIBUTORS "AS IS' AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES.
+THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE, OR NON-INFRINGEMENT ARE DISCLAIMED TO THE EXTENT PERMITTED BY
+YOUR LOCAL LAW. UNLESS REQUIRED BY LAW, NO COPYRIGHT HOLDER OR
+CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR
+CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OF THE PACKAGE,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+=cut
+
+1;    # End of HON::I18N::Converter
