@@ -31,10 +31,6 @@ Perhaps a little code snippet.
     my $foo = HON::I18N::Converter->new();
     ...
 
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
 
 =head1 SUBROUTINES/METHODS
 
@@ -71,10 +67,6 @@ if you don't export anything, such as for a purely object-oriented module.
 			die $parser->error(), ".\n";
 		}
 	}
-
-=head2 function2
-
-=cut
 
 	#Retourne le tableau contenant la liste des langues
 	sub p_getLanguage {
@@ -137,18 +129,6 @@ if you don't export anything, such as for a purely object-oriented module.
 		}
 	}
 
-=head2 $self->build_properties_JS_file()
-
-=cut
-
-	#Construit une hash contenant les langues
-	sub build_properties_JS_file {
-		my ( $self, $args ) = @_;
-		my @languges = $self->p_getLanguage();
-		$self->p_buildHash( \@languges );
-		return $self->p_write_JS_i18n();
-	}
-
 	#Fonction valable pour le javascript
 	sub p_write_JS_i18n {
 		my ( $self, $languages ) = @_;
@@ -173,30 +153,35 @@ if you don't export anything, such as for a purely object-oriented module.
 		return $content . "})(jQuery);";
 	}
 
-=head2 $self->build_properties_INI_file()
-
-=cut
-
-	sub build_properties_INI_file {
-		my ( $self, $args ) = @_;
-		my @languges = $self->p_getLanguage();
-		$self->p_buildHash( \@languges );
-		return $self->p_write_INI_i18n();
-	}
-
 	#Fonction valable pour le .ini
 	sub p_write_INI_i18n {
 		my ( $self, $languages ) = @_;
 		my $content = "";
 		foreach my $lang ( keys %{ $self->labels } ) {
-			$content .= "Language: " . "$lang\n\n";
-			foreach my $lab ( keys %{ $self->labels->{$lang} } ) {
+			foreach my $LAB ( keys %{ $self->labels->{$lang} } ) {
 				$content .=
-				  ( $lab . "=" . $self->labels->{$lang}->{$lab} . "\n" );
+				  ( $LAB . "=" . $self->labels->{$lang}->{$LAB} . "\n" );
 			}
 			$content .= "\n";
 		}
 		return $content;
+	}
+
+=head2 $self->build_properties_file()
+
+=cut
+
+	sub build_properties_file {
+		my ( $self, $format ) = @_;
+		my @languges = $self->p_getLanguage();
+		$self->p_buildHash( \@languges );
+
+		if ( $format eq 'JS' ) {
+			return $self->p_write_JS_i18n();
+		}
+		elsif ( $format eq 'INI' ) {
+			return $self->p_write_INI_i18n();
+		}
 	}
 }
 

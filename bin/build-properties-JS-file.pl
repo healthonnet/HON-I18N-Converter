@@ -19,7 +19,7 @@ build the javascript file and the .js file for the Search Engine language
 
 =head1 SYNOPSIS
 
-./build-rss-valid-link.pl --help
+./build-properties-JS-file.pl --help
 
 ./build-properties-JS-file.pl --i18n=i18n/TestConversionENES.xls --output=/Users/chahlalsamia/Desktop/ENES.js
 
