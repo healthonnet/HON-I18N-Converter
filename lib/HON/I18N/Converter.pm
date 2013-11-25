@@ -148,12 +148,12 @@ Perhaps a little code snippet.
 			#Intitule de chaque section
 			$content .= "\$.i18n.$lang = $json;\n";
 		}
-
+		
 		#Derniere ligne du document jQuery
 		return $content . "})(jQuery);";
 	}
 
-	#Fonction valable pour le .ini
+	#Fonction valable pour le.ini
 	sub p_write_INI_i18n {
 		my ( $self, $languages ) = @_;
 		my $content = "";
