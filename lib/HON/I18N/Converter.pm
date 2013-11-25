@@ -2,11 +2,12 @@ package HON::I18N::Converter;
 
 use 5.006;
 use strict;
-use warnings FATAL => 'all';
+use warnings;
 
 use Encode;
 use Spreadsheet::ParseExcel;
 use JSON::XS;
+use IO::All -utf8;
 
 =head1 NAME
 
@@ -155,16 +156,17 @@ Perhaps a little code snippet.
 
 	#Fonction valable pour le.ini
 	sub p_write_INI_i18n {
-		my ( $self, $languages ) = @_;
-		my $content = "";
+		my ( $self, $folder ) = @_;
+			
 		foreach my $lang ( keys %{ $self->labels } ) {
+		  my $content = "";
 			foreach my $LAB ( keys %{ $self->labels->{$lang} } ) {
 				$content .=
 				  ( $LAB . "=" . $self->labels->{$lang}->{$LAB} . "\n" );
 			}
 			$content .= "\n";
-		}
-		return $content;
+			$content > io($folder.'/'.$lang.'.ini');
+    }
 	}
 
 =head2 $self->build_properties_file()
@@ -172,7 +174,7 @@ Perhaps a little code snippet.
 =cut
 
 	sub build_properties_file {
-		my ( $self, $format ) = @_;
+		my ( $self, $format, $folder ) = @_;
 		my @languges = $self->p_getLanguage();
 		$self->p_buildHash( \@languges );
 
@@ -180,7 +182,7 @@ Perhaps a little code snippet.
 			return $self->p_write_JS_i18n();
 		}
 		elsif ( $format eq 'INI' ) {
-			return $self->p_write_INI_i18n();
+			return $self->p_write_INI_i18n($folder);
 		}
 	}
 }

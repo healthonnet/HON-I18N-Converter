@@ -61,11 +61,4 @@ my $content = <<EOS;
 
 EOS
 
-$content .= $parser->build_properties_INI_file();
-
-if ($output){
-  $content > io($output);
-} else{
-  print $content;
-}
-
+$parser->build_properties_file('INI', $output);

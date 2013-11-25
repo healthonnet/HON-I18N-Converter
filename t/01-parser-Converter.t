@@ -49,24 +49,16 @@ $content = encode('utf-8', $content);
 $content > io('t/resources/output2.js');
 
 #Test permettant de générer un fichier .ini à partir du document arabe: OK
-my $content2 = $parser->build_properties_file('INI');
-$content2 = encode('utf-8', $content2);
-$content2 > io('t/resources/Test.ini');
+my $content2 = $parser->build_properties_file('INI', 't/resources/');
 
 #Test permettant de générer un fichier .ini à partir du document à plusieurs langues: OK
-my $content3 = $parser2->build_properties_file('INI');
-$content3 = encode('utf-8', $content3);
-$content3 > io('t/resources/Test2.ini');
+my $content3 = $parser2->build_properties_file('INI', 't/resources/');
 
 #Test permettant de générer un fichier .ini à partir du document Anglais/Espagnol: OK
-my $content4 = $parser3->build_properties_file('INI');
-$content4 = encode('utf-8', $content4);
-$content4 > io('t/resources/Test3.ini');
+my $content4 = $parser3->build_properties_file('INI', 't/resources/');
 
 #Test permettant de générer un fichier .ini à partir du document Anglais/Espagnol: 
-my $content5 = $parser3->build_properties_file('INI');
-$content5 = encode('utf-8', $content5);
-$content5 > io('t/resources/Test4.ini');
+my $content5 = $parser3->build_properties_file('INI', 't/resources/');
 
 #Test de comparaison pour voir si le fichier .ini généré du document Anglais/Espagnol est bien celui attendu: OK 
 #(mais pour lui les deux docs sont différents)
