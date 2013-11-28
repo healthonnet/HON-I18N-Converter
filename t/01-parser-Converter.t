@@ -44,9 +44,9 @@ foreach my $row (@{$data}){
 #warn Dumper $parser->labels;
 
 #Test permettant de générer un fichier javascript à partir du document arabe: OK
-my $content = $parser->build_properties_file('JS');
-$content = encode('utf-8', $content);
-$content > io('t/resources/output2.js');
+#my $content = $parser->build_properties_file('JS');
+#$content = encode('utf-8', $content);
+#$content > io('t/resources/output2.js');
 
 #Test permettant de générer un fichier .ini à partir du document arabe: OK
 my $content2 = $parser->build_properties_file('INI', 't/resources/');
@@ -59,6 +59,9 @@ my $content4 = $parser3->build_properties_file('INI', 't/resources/');
 
 #Test permettant de générer un fichier .ini à partir du document Anglais/Espagnol: 
 my $content5 = $parser3->build_properties_file('INI', 't/resources/');
+
+#Test permettant de générer un fichier .js à partir du document à plusieurs langues:
+my $content6 = $parser2->build_properties_file('JS', 't/resources/');
 
 #Test de comparaison pour voir si le fichier .ini généré du document Anglais/Espagnol est bien celui attendu: OK 
 #(mais pour lui les deux docs sont différents)

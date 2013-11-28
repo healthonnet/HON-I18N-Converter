@@ -132,10 +132,7 @@ Perhaps a little code snippet.
 
 	#Fonction valable pour le javascript
 	sub p_write_JS_i18n {
-		my ( $self, $languages ) = @_;
-
-		#En tete du fichier jQuery
-		my $content = "(function(\$){\n";
+		my ( $self, $folder ) = @_;
 
 		#Pour encodage
 		my $encoder = JSON::XS->new->ascii->pretty->allow_nonref;
@@ -143,30 +140,33 @@ Perhaps a little code snippet.
 		#Parcours d'une table de hachage
 		foreach my $lang ( keys %{ $self->labels } ) {
 
+			#En tete du fichier jQuery
+			my $content = "(function(\$){\n";
+
 			my $json =
 			  $encoder->encode( { strings => $self->labels->{$lang} } );
 
 			#Intitule de chaque section
 			$content .= "\$.i18n.$lang = $json;\n";
+
+			#Derniere ligne du document jQuery
+			$content > io( $folder . '/' . $lang . '.js' );
 		}
-		
-		#Derniere ligne du document jQuery
-		return $content . "})(jQuery);";
 	}
 
 	#Fonction valable pour le.ini
 	sub p_write_INI_i18n {
 		my ( $self, $folder ) = @_;
-			
+
 		foreach my $lang ( keys %{ $self->labels } ) {
-		  my $content = "";
+			my $content = "";
 			foreach my $LAB ( keys %{ $self->labels->{$lang} } ) {
 				$content .=
 				  ( $LAB . "=" . $self->labels->{$lang}->{$LAB} . "\n" );
 			}
 			$content .= "\n";
-			$content > io($folder.'/'.$lang.'.ini');
-    }
+			$content > io( $folder . '/' . $lang . '.ini' );
+		}
 	}
 
 =head2 $self->build_properties_file()
@@ -179,7 +179,7 @@ Perhaps a little code snippet.
 		$self->p_buildHash( \@languges );
 
 		if ( $format eq 'JS' ) {
-			return $self->p_write_JS_i18n();
+			return $self->p_write_JS_i18n($folder);
 		}
 		elsif ( $format eq 'INI' ) {
 			return $self->p_write_INI_i18n($folder);
