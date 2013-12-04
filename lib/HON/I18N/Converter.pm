@@ -8,6 +8,7 @@ use Encode;
 use Spreadsheet::ParseExcel;
 use JSON::XS;
 use IO::All -utf8;
+use Carp;
 
 =head1 NAME
 
@@ -131,28 +132,30 @@ Perhaps a little code snippet.
 	}
 
 	#Fonction valable pour le javascript
-	sub p_write_JS_i18n {
-		my ( $self, $folder ) = @_;
+  sub p_write_JS_i18n {
+    my ( $self, $folder ) = @_;
 
-		#Pour encodage
-		my $encoder = JSON::XS->new->ascii->pretty->allow_nonref;
+    #En tete du fichier jQuery
+    my $content = "(function(\$){\n";
 
-		#Parcours d'une table de hachage
-		foreach my $lang ( keys %{ $self->labels } ) {
+    #Pour encodage
+    my $encoder = JSON::XS->new->ascii->pretty->allow_nonref;
 
-			#En tete du fichier jQuery
-			my $content = "(function(\$){\n";
+    #Parcours d'une table de hachage
+    foreach my $lang ( keys %{ $self->labels } ) {
 
-			my $json =
-			  $encoder->encode( { strings => $self->labels->{$lang} } );
+      my $json =
+        $encoder->encode( { strings => $self->labels->{$lang} } );
 
-			#Intitule de chaque section
-			$content .= "\$.i18n.$lang = $json;\n";
-
-			#Derniere ligne du document jQuery
-			$content > io( $folder . '/' . $lang . '.js' );
-		}
-	}
+      #Intitule de chaque section
+      $content .= "\$.i18n.$lang = $json;\n";
+    }
+    
+    #Derniere ligne du document jQuery
+    $content .= "})(jQuery);";
+    
+    $content > io( $folder . '/jQuery-i18n.js' );
+  }
 
 	#Fonction valable pour le.ini
 	sub p_write_INI_i18n {
@@ -164,7 +167,6 @@ Perhaps a little code snippet.
 				$content .=
 				  ( $LAB . "=" . $self->labels->{$lang}->{$LAB} . "\n" );
 			}
-			$content .= "\n";
 			$content > io( $folder . '/' . $lang . '.ini' );
 		}
 	}
@@ -183,6 +185,8 @@ Perhaps a little code snippet.
 		}
 		elsif ( $format eq 'INI' ) {
 			return $self->p_write_INI_i18n($folder);
+		} else {
+		  croak "Unknown format";
 		}
 	}
 }
