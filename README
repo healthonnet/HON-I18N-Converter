@@ -1,15 +1,15 @@
 HON-I18N-Converter
 
-The README is used to introduce the module and provide instructions on
-how to install the module, any machine dependencies it may have (for
-example C compilers and installed libraries) and any other information
-that should be provided before the module is installed.
+SYNOPSIS
 
-A README file is required for CPAN modules since CPAN extracts the README
-file from a module distribution so that people browsing the archive
-can use it to get an idea of the module's uses. It is usually a good idea
-to provide version information here so that people can decide whether
-fixes for the module are worth downloading.
+Convert an Excel (2003) file to another format
+
+use HON::I18N::Converter;
+
+my $converter = HON::I18N::Converter->new( excel => 'path/to/my/file.xls' );
+$converter->build_properties_file('INI', 'destination/folder/', $comment);
+...
+$converter->build_properties_file('JS', 'destination/folder/', $comment);
 
 
 INSTALLATION
