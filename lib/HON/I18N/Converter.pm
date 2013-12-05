@@ -35,97 +35,96 @@ Convert Excel (2003) i18n file to another format
 =cut
 
 {
-	use Object::InsideOut;
+  use Object::InsideOut;
 
-	my @workbook : Field : Acc( 'Name' => 'workbook' );
+  my @workbook : Field : Acc( 'Name' => 'workbook' );
 
-	#Tableau labels
-	my @labels : Field : Type('Hash') : Acc( 'Name' => 'labels' );
+  #Tableau labels
+  my @labels : Field : Type('Hash') : Acc( 'Name' => 'labels' );
 
-	#Table de hachage init_args
-	my %init_args : InitArgs = (
-		'EXCEL' => {
-			Regex     => qr/^excel$/i,
-			Mandatory => 1,
-			Type      => 'Scalar',
-		},
-	);
+  #Table de hachage init_args
+  my %init_args : InitArgs = (
+    'EXCEL' => {
+      Regex     => qr/^excel$/i,
+      Mandatory => 1,
+      Type      => 'Scalar',
+    },
+  );
 
-	sub init : Init {
-		my ( $self, $args ) = @_;
+  sub init : Init {
+    my ( $self, $args ) = @_;
 
-		$self->labels( {} );
+    $self->labels( {} );
 
-		my $parser = Spreadsheet::ParseExcel->new();
-		$self->workbook( $parser->parse( $args->{EXCEL} ) );
+    my $parser = Spreadsheet::ParseExcel->new();
+    $self->workbook( $parser->parse( $args->{EXCEL} ) );
 
-		if ( !defined $self->workbook ) {
-			die $parser->error(), ".\n";
-		}
-	}
+    if ( !defined $self->workbook ) {
+      die $parser->error(), ".\n";
+    }
+  }
 
-	#Retourne le tableau contenant la liste des langues
-	sub p_getLanguage {
+  #Retourne le tableau contenant la liste des langues
+  sub p_getLanguage {
 
-#La fonction shift prend un tableau en argument; elle supprime son premier element
-#(les autres sont alors decales) et renvoie cet element.
-		my ($self) = shift;
+    #La fonction shift prend un tableau en argument; elle supprime son premier element
+    #(les autres sont alors decales) et renvoie cet element.
+    my ($self) = shift;
 
-		#Declaration tableau vide
-		my @line = ();
+    #Declaration tableau vide
+    my @line = ();
 
-		for my $worksheet ( $self->workbook->worksheets() ) {
-			my ( $col_min, $col_max ) = $worksheet->col_range();
+    for my $worksheet ( $self->workbook->worksheets() ) {
+      my ( $col_min, $col_max ) = $worksheet->col_range();
 
-#Recuperation des cellules de la premiere ligne (ligne correspondant a la langue)
-			for my $col ( $col_min .. $col_max ) {
+      #Recuperation des cellules de la premiere ligne (ligne correspondant a la langue)
+      for my $col ( $col_min .. $col_max ) {
 
-				#Valeur de la cellule
-				my $cell = $worksheet->get_cell( 0, $col );
+        #Valeur de la cellule
+        my $cell = $worksheet->get_cell( 0, $col );
 
-				#Va a la prochaine cellule sauf si la cellule est vide
-				next unless $cell;
+        #Va a la prochaine cellule sauf si la cellule est vide
+        next unless $cell;
 
-		  #Push permet d'ajouter une liste de valeurs scalaires au tableau @line
-				push( @line, $cell->value() );
-			}
-		}
+        #Push permet d'ajouter une liste de valeurs scalaires au tableau @line
+        push( @line, $cell->value() );
+      }
+    }
 
-		#Retourne le tableau contenant la liste des langues
-		return @line;
-	}
+    #Retourne le tableau contenant la liste des langues
+    return @line;
+  }
 
-	sub p_buildHash {
-		my ( $self, $languages ) = @_;
+  sub p_buildHash {
+    my ( $self, $languages ) = @_;
 
-		#Parcours ligne par ligne
-		#Colonne par colonne
-		for my $worksheet ( $self->workbook->worksheets() ) {
+    #Parcours ligne par ligne
+    #Colonne par colonne
+    for my $worksheet ( $self->workbook->worksheets() ) {
 
-			my ( $row_min, $row_max ) = $worksheet->row_range();
-			my ( $col_min, $col_max ) = $worksheet->col_range();
+      my ( $row_min, $row_max ) = $worksheet->row_range();
+      my ( $col_min, $col_max ) = $worksheet->col_range();
 
-			for my $row ( 1 .. $row_max ) {
+      for my $row ( 1 .. $row_max ) {
 
-				my $label;
+        my $label;
 
-				for my $col ( $col_min .. $col_max ) {
-					my $cell = $worksheet->get_cell( $row, $col );
-					next unless $cell;
+        for my $col ( $col_min .. $col_max ) {
+          my $cell = $worksheet->get_cell( $row, $col );
+          next unless $cell;
 
-					if ( $col == 0 ) {
-						$label = $cell->value();
-					}
-					else {
-						$self->labels->{ $languages->[$col] }->{$label} =
-						  $cell->value();
-					}
-				}
-			}
-		}
-	}
+          if ( $col == 0 ) {
+            $label = $cell->value();
+          }
+          else {
+            $self->labels->{ $languages->[$col] }->{$label} = $cell->value();
+          }
+        }
+      }
+    }
+  }
 
-	#Fonction valable pour le javascript
+  #Fonction valable pour le javascript
   sub p_write_JS_i18n {
     my ( $self, $folder, $header ) = @_;
 
@@ -138,51 +137,54 @@ Convert Excel (2003) i18n file to another format
     #Parcours d'une table de hachage
     foreach my $lang ( keys %{ $self->labels } ) {
 
-      my $json =
-        $encoder->encode( { strings => $self->labels->{$lang} } );
+      my $json = $encoder->encode( { strings => $self->labels->{$lang} } );
 
       #Intitule de chaque section
       $content .= "\$.i18n.$lang = $json;\n";
     }
-    
+
     #Derniere ligne du document jQuery
     $content .= "})(jQuery);";
-    
+
     $content > io( $folder . '/jQuery-i18n.js' );
   }
 
-	#Fonction valable pour le.ini
-	sub p_write_INI_i18n {
-		my ( $self, $folder, $header ) = @_;
+  #Fonction valable pour le.ini
+  sub p_write_INI_i18n {
+    my ( $self, $folder, $header ) = @_;
 
-		foreach my $lang ( keys %{ $self->labels } ) {
-			my $content = $header;
-			foreach my $LAB ( keys %{ $self->labels->{$lang} } ) {
-				$content .=
-				  ( $LAB . "=" . $self->labels->{$lang}->{$LAB} . "\n" );
-			}
-			$content > io( $folder . '/' . $lang . '.ini' );
-		}
-	}
+    foreach my $lang ( keys %{ $self->labels } ) {
+      my $content = $header;
+      foreach my $LAB ( keys %{ $self->labels->{$lang} } ) {
+        $content .= ( $LAB . "=" . $self->labels->{$lang}->{$LAB} . "\n" );
+      }
+      $content > io( $folder . '/' . $lang . '.ini' );
+    }
+  }
+
+=head1 SUBROUTINES/METHODS
 
 =head2 $self->build_properties_file()
 
+Convert Excel file to INI or Jquery i18n plugin
+
 =cut
 
-	sub build_properties_file {
-		my ( $self, $format, $folder, $header ) = @_;
-		my @languges = $self->p_getLanguage();
-		$self->p_buildHash( \@languges );
+  sub build_properties_file {
+    my ( $self, $format, $folder, $header ) = @_;
+    my @languges = $self->p_getLanguage();
+    $self->p_buildHash( \@languges );
 
-		if ( $format eq 'JS' ) {
-			return $self->p_write_JS_i18n($folder,$header);
-		}
-		elsif ( $format eq 'INI' ) {
-			return $self->p_write_INI_i18n($folder,$header);
-		} else {
-		  croak "Unknown format";
-		}
-	}
+    if ( $format eq 'JS' ) {
+      return $self->p_write_JS_i18n( $folder, $header );
+    }
+    elsif ( $format eq 'INI' ) {
+      return $self->p_write_INI_i18n( $folder, $header );
+    }
+    else {
+      croak "Unknown format";
+    }
+  }
 }
 
 =head1 AUTHOR

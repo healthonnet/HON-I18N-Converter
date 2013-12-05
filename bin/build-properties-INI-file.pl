@@ -15,26 +15,25 @@ build-properties-INI-file.pl
 
 =head1 DESCRIPTION
 
-build the INI file and the .ini file for the Search Engine language
+Convert an excel i18n file to ini format
 
 =head1 SYNOPSIS
 
 ./build-properties-INI-file.pl --help
 
-./build-properties-INI-file.pl --i18n=i18n/TestConversionENES.xls --output=/Users/chahlalsamia/Desktop/ENES.ini
-
+./build-properties-INI-file.pl --i18n=path/to/my/file.xls --output=/tmp/ini
 
 =head1 ARGUMENTS
 
 =over 2
 
-=item --i18n=i18n/TestConversionENES.xls
+=item --i18n=path/to/my/file.xls
 
 The excel file with all the language label -> traduction
 
-=item --output=/Users/chahlalsamia/Desktop/ENES.ini
+=item --output=/tmp/ini
 
-The output .ini folder
+The destination folder
 
 =cut
 
@@ -47,7 +46,7 @@ GetOptions(
   )
   || pod2usage(2);
 
-if ( $help || !$i18n ) {
+if ( $help || !$i18n || !$output ) {
   pod2usage(1);
   exit(0);
 }

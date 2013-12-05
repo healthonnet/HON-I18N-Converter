@@ -15,25 +15,25 @@ build-properties-JS-file.pl
 
 =head1 DESCRIPTION
 
-build the javascript file and the .js file for the Search Engine language
+Convert an excel i18n file to jQuery i18n plugin format
 
 =head1 SYNOPSIS
 
 ./build-properties-JS-file.pl --help
 
-./build-properties-JS-file.pl --i18n=i18n/TestConversionENES.xls --output=/Users/chahlalsamia/Desktop/ENES.js
+./build-properties-JS-file.pl --i18n=path/to/my/file.xls --output=/tmp/js
 
 =head1 ARGUMENTS
 
 =over 2
 
-=item --i18n=i18n/TestConversionENES.xls
+=item --i18n=path/to/my/file.xls
 
 The excel file with all the language label -> traduction
 
-=item --output=/Users/chahlalsamia/Desktop/ENES.js
+=item --output=/tmp/js
 
-The output javascript file
+The destination folder
 
 =cut
 
@@ -46,7 +46,7 @@ GetOptions(
   )
   || pod2usage(2);
 
-if ( $help || !$i18n ) {
+if ( $help || !$i18n || !$output ) {
   pod2usage(1);
   exit(0);
 }
