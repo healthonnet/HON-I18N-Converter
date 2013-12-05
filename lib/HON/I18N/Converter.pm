@@ -29,7 +29,7 @@ Convert Excel (2003) i18n file to another format
     use HON::I18N::Converter;
 
     my $converter = HON::I18N::Converter->new( excel => 'path/to/my/file.xls' );
-    $converter->build_properties_file('INI', 'destination/foler/', $comment);
+    $converter->build_properties_file('INI', 'destination/folder/', $comment);
     ...
 
 =cut
