@@ -12,7 +12,7 @@ use Carp;
 
 =head1 NAME
 
-HON::I18N::Converter
+HON::I18N::Converter - perl I18N Converter
 
 =head1 VERSION
 
