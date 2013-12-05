@@ -24,6 +24,7 @@ my $builder = Module::Build->new(
         'Encode'     => 2.42_01,
         'JSON::XS'   => 2.33,
         'Carp'       => 1.26, 
+        'Object::InsideOut' => 3.98,
         'Spreadsheet::ParseExcel' => 0.59,      
     },
     add_to_cleanup     => [ 'HON-I18N-Converter-*' ],

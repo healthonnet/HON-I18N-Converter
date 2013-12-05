@@ -12,7 +12,7 @@ use Carp;
 
 =head1 NAME
 
-HON::I18N::Converter - The great new HON::I18N::Converter!
+HON::I18N::Converter
 
 =head1 VERSION
 
@@ -24,19 +24,13 @@ our $VERSION = '0.01';
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
+Convert Excel (2003) i18n file to another format
 
     use HON::I18N::Converter;
 
-    my $foo = HON::I18N::Converter->new();
+    my $converter = HON::I18N::Converter->new( excel => 'path/to/my/file.xls' );
+    $converter->build_properties_file('INI', 'destination/foler/', $comment);
     ...
-
-
-=head1 SUBROUTINES/METHODS
-
-=head2 function1
 
 =cut
 
