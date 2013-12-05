@@ -133,10 +133,10 @@ Perhaps a little code snippet.
 
 	#Fonction valable pour le javascript
   sub p_write_JS_i18n {
-    my ( $self, $folder ) = @_;
+    my ( $self, $folder, $header ) = @_;
 
     #En tete du fichier jQuery
-    my $content = "(function(\$){\n";
+    my $content = $header . "(function(\$){\n";
 
     #Pour encodage
     my $encoder = JSON::XS->new->ascii->pretty->allow_nonref;
@@ -159,10 +159,10 @@ Perhaps a little code snippet.
 
 	#Fonction valable pour le.ini
 	sub p_write_INI_i18n {
-		my ( $self, $folder ) = @_;
+		my ( $self, $folder, $header ) = @_;
 
 		foreach my $lang ( keys %{ $self->labels } ) {
-			my $content = "";
+			my $content = $header;
 			foreach my $LAB ( keys %{ $self->labels->{$lang} } ) {
 				$content .=
 				  ( $LAB . "=" . $self->labels->{$lang}->{$LAB} . "\n" );
@@ -176,15 +176,15 @@ Perhaps a little code snippet.
 =cut
 
 	sub build_properties_file {
-		my ( $self, $format, $folder ) = @_;
+		my ( $self, $format, $folder, $header ) = @_;
 		my @languges = $self->p_getLanguage();
 		$self->p_buildHash( \@languges );
 
 		if ( $format eq 'JS' ) {
-			return $self->p_write_JS_i18n($folder);
+			return $self->p_write_JS_i18n($folder,$header);
 		}
 		elsif ( $format eq 'INI' ) {
-			return $self->p_write_INI_i18n($folder);
+			return $self->p_write_INI_i18n($folder,$header);
 		} else {
 		  croak "Unknown format";
 		}

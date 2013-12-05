@@ -25,7 +25,7 @@ my $data = [
 foreach my $row ( @{$data} ) {
   my $dir = File::Temp->newdir();
   my $converter = HON::I18N::Converter->new( excel => $row->{'file'} );
-  $converter->build_properties_file('JS', $dir);
+  $converter->build_properties_file('JS', $dir, '');
   
     file_exists_ok( $dir.'/jQuery-i18n.js' );
     file_not_empty_ok( $dir.'/jQuery-i18n.js'  );

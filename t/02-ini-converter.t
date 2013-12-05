@@ -24,7 +24,7 @@ my $data = [
 foreach my $row ( @{$data} ) {
   my $dir = File::Temp->newdir();
   my $converter = HON::I18N::Converter->new( excel => $row->{'file'} );
-  $converter->build_properties_file('INI', $dir);
+  $converter->build_properties_file('INI', $dir, '');
   
   foreach my $language (@{$row->{language}}){
     file_exists_ok( $dir.'/'.$language.'.ini' );
