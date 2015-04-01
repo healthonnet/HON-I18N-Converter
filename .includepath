@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<includepath>
-  <includepathentry path="${resource_loc:HON-I18N-Converter/lib}" />
-</includepath>
-
