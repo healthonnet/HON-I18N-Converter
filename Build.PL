@@ -16,7 +16,7 @@ my $builder = Module::Build->new(
         'Test::More'      => 0.98,
         'Test::File'      => 1.35,
         'Test::Exception' => 0.31,
-        'File::Compare'   => 1.1006,
+        'File::Compare'   => 1.1003,
     },
     requires => {
         'File::Temp' => 0.22,
