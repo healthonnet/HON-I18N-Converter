@@ -35,6 +35,8 @@ The excel file with all the language label -> traduction
 
 The destination folder
 
+=back
+
 =cut
 
 my ( $help, $i18n, $output );
