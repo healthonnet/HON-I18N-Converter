@@ -2,6 +2,7 @@ HON-I18N-Converter
 ==================
 
 [![Build Status](https://travis-ci.org/healthonnet/HON-I18N-Converter.svg?branch=master)](https://travis-ci.org/healthonnet/HON-I18N-Converter)
+[![Coverage Status](https://coveralls.io/repos/healthonnet/HON-I18N-Converter/badge.svg?branch=master)](https://coveralls.io/r/healthonnet/HON-I18N-Converter?branch=master)
 
 Perl i18n Converter
 
