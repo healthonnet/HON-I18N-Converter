@@ -29,11 +29,22 @@ foreach my $row ( @{$data} ) {
   file_exists_ok( $dir.'/jQuery-i18n.js' );
   file_not_empty_ok( $dir.'/jQuery-i18n.js'  );
   
-  my @generatedLines = io($dir.'/jQuery-i18n.js')->slurp;;
-  my @expectedLines  = io($row->{'output'}.'/i18n.js')->slurp;;
+  my @generatedLines = io($dir.'/jQuery-i18n.js')->slurp;
+  my @expectedLines  = io($row->{'output'}.'/i18n.js')->slurp;
   
-  @generatedLines = sort @generatedLines;
-  @expectedLines  = sort @expectedLines;
+  my @genLines = map {
+  	my $s = $_;
+  	$s =~ s/,$// if $s =~ m/,$/;
+  	$s;
+  } @generatedLines;
+  my @expLines = map {
+  	my $s = $_;
+  	$s =~ s/,$// if $s =~ m/,$/;
+  	$s;
+  } @expectedLines;
+  
+  @generatedLines = sort @genLines;
+  @expectedLines  = sort @expLines;
   
   is_deeply(\@generatedLines, \@expectedLines, 'not same array');
 }
