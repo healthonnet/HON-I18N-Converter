@@ -1,10 +1,12 @@
 HON-I18N-Converter
 ==================
 
+[![Build Status](https://travis-ci.org/healthonnet/HON-I18N-Converter.svg?branch=master)](https://travis-ci.org/healthonnet/HON-I18N-Converter)
+
 Perl i18n Converter
 
-Synopsis
-------------
+Usage
+-----
 
 Convert an Excel (2003) file to another format
 
@@ -57,6 +59,13 @@ You can also look for information at:
 * Search CPAN
   http://search.cpan.org/dist/HON-I18N-Converter/
 
+Author
+------
+ * [Samia Chahlal](https://github.com/samiachahlal)
+ 
+Maintainer
+----------
+ * [William Belle](https://github.com/williambelle)
 
 License and Copyright
 ---------------------
