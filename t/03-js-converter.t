@@ -2,7 +2,6 @@ use strict;
 use warnings;
 
 use IO::All;
-use File::Compare;
 use File::Temp qw/tempfile tempdir/;
 use HON::I18N::Converter;
 
@@ -27,15 +26,14 @@ foreach my $row ( @{$data} ) {
   my $converter = HON::I18N::Converter->new( excel => $row->{'file'} );
   $converter->build_properties_file('JS', $dir, '');
   
-    file_exists_ok( $dir.'/jQuery-i18n.js' );
-    file_not_empty_ok( $dir.'/jQuery-i18n.js'  );
-    
-    is( 
-      compare(
-        $row->{'output'}.'/i18n.js' , 
-        $dir.'/jQuery-i18n.js' 
-      ), 
-      0, 
-      'not the same file'
-    );
+  file_exists_ok( $dir.'/jQuery-i18n.js' );
+  file_not_empty_ok( $dir.'/jQuery-i18n.js'  );
+  
+  my @generatedLines = io($dir.'/jQuery-i18n.js')->slurp;;
+  my @expectedLines  = io($row->{'output'}.'/i18n.js')->slurp;;
+  
+  @generatedLines = sort @generatedLines;
+  @expectedLines  = sort @expectedLines;
+  
+  is_deeply(\@generatedLines, \@expectedLines, 'not same array');
 }

@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use File::Compare;
+use IO::All;
 use File::Temp qw/tempfile tempdir/;
 use HON::I18N::Converter;
 
@@ -30,13 +30,13 @@ foreach my $row ( @{$data} ) {
     file_exists_ok( $dir.'/'.$language.'.ini' );
     file_not_empty_ok( $dir.'/'.$language.'.ini' );
     
-    is( 
-      compare(
-        $row->{'output'}.'/'.$language.'.ini', 
-        $dir.'/'.$language.'.ini'
-      ), 
-      0, 
-      'not the same file'
-    );
-  }   
+    my @generatedLines = io( $dir.'/'.$language.'.ini')->slurp;
+    my @expectedLines  = io($row->{'output'}.'/'.$language.'.ini')->slurp;
+    
+    @generatedLines = sort @generatedLines;
+    @expectedLines  = sort @expectedLines;
+    
+    is_deeply(\@generatedLines, \@expectedLines, 'not same array');
+    
+  }
 }
