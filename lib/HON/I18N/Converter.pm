@@ -32,6 +32,10 @@ Convert Excel (2003) i18n file to another format
     $converter->build_properties_file('INI', 'destination/folder/', $comment);
     ...
 
+=head1 DESCRIPTION
+
+perl I18N Converter 
+
 =cut
 
 {
@@ -87,7 +91,7 @@ Convert Excel (2003) i18n file to another format
         next unless $cell;
 
         #Push permet d'ajouter une liste de valeurs scalaires au tableau @line
-        push( @line, $cell->value() );
+        push @line, $cell->value();
       }
     }
 
@@ -122,6 +126,7 @@ Convert Excel (2003) i18n file to another format
         }
       }
     }
+    return;
   }
 
   #Fonction valable pour le javascript
@@ -144,9 +149,10 @@ Convert Excel (2003) i18n file to another format
     }
 
     #Derniere ligne du document jQuery
-    $content .= "})(jQuery);";
+    $content .= '})(jQuery);';
 
     $content > io( $folder . '/jQuery-i18n.js' );
+    return;
   }
 
   #Fonction valable pour le.ini
@@ -156,10 +162,11 @@ Convert Excel (2003) i18n file to another format
     foreach my $lang ( keys %{ $self->labels } ) {
       my $content = $header;
       foreach my $LAB ( keys %{ $self->labels->{$lang} } ) {
-        $content .= ( $LAB . "=" . $self->labels->{$lang}->{$LAB} . "\n" );
+        $content .= ( $LAB . q{=} . $self->labels->{$lang}->{$LAB} . "\n" );
       }
-      $content > io( $folder . '/' . $lang . '.ini' );
+      $content > io( $folder . q{/} . $lang . '.ini' );
     }
+    return;
   }
 
 =head1 SUBROUTINES/METHODS
@@ -182,7 +189,7 @@ Convert Excel file to INI or Jquery i18n plugin
       return $self->p_write_INI_i18n( $folder, $header );
     }
     else {
-      croak "Unknown format";
+      croak 'Unknown format';
     }
   }
 }
@@ -191,7 +198,7 @@ Convert Excel file to INI or Jquery i18n plugin
 
 Samia Chahlal, C<< <samia.chahlal at yahoo.com> >>
 
-=head1 BUGS
+=head1 BUGS AND LIMITATIONS
 
 Please report any bugs or feature requests to C<bug-hon-i18n-converter at rt.cpan.org>, or through
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=HON-I18N-Converter>.  I will be notified, and then you'll
