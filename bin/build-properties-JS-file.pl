@@ -19,7 +19,7 @@ Convert an excel i18n file to jQuery i18n plugin format
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =head1 USAGE
 
@@ -43,7 +43,7 @@ The destination folder
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 my ( $help, $i18n, $output );
 

@@ -16,11 +16,11 @@ HON::I18N::Converter - perl I18N Converter
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 SYNOPSIS
 
@@ -34,7 +34,7 @@ Convert Excel (2003) i18n file to another format
 
 =head1 DESCRIPTION
 
-perl I18N Converter 
+perl I18N Converter
 
 =cut
 

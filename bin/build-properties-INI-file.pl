@@ -15,7 +15,7 @@ build-properties-INI-file.pl
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =head1 DESCRIPTION
 
@@ -43,7 +43,7 @@ The destination folder
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 my ( $help, $i18n, $output );
 
