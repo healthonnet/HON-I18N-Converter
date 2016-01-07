@@ -26,6 +26,11 @@ my $builder = Module::Build->new(
         'Object::InsideOut' => 3.98,
         'Spreadsheet::ParseExcel' => 0.59,      
     },
+    meta_merge => {
+        resources => {
+            repository => 'http://github.com/healthonnet/HON-I18N-Converter',
+        },
+    },
     add_to_cleanup     => [ 'HON-I18N-Converter-*' ],
     create_makefile_pl => 'traditional',
 );
